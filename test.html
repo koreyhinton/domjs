@@ -13,8 +13,11 @@
     <p id="myparagraph">here</p>
     <button onclick="dom('myparagraph').append('.');">+</button><button onclick="dom('myparagraph').replace('gone');">-</button><button onclick="dom('myparagraph').visibility('hidden');">hide</button><button onclick="dom('myparagraph').visibility('visible');">show</button>
     <script>
-      dom("outer").traverse(function(node) {
-          node.replace("whoa");
+      //dom("outer").traverse(function(node) {
+      //    node.replace("whoa");
+      //});
+      dom("button").traverse(function(node) {
+          node.append("you've been moderfied");
       });
     </script>
   </body>
