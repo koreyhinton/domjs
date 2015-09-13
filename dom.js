@@ -139,7 +139,6 @@ var dom = (function () {
             var cacheKeys = Object.keys(cache);
             
             if (cacheKeys.length === CACHE_LIMIT && cacheKeys.length > 0) {
-                console.log("delete");
                 delete cache[cacheKeys[0]];
             }
             cache[identifier] = domObject;
