@@ -25,7 +25,10 @@ var dom = (function () {
 
     var tags = ["html", "title", "body", "h1", "h2", "h3", "h4", "h5", "h6", "p", "br", "hr", "abbr", "address", "b", "i", "bdi", "bdo", "blockquote", "cite", "code", "del", "dfn", "em", "ins", "kbd", "mark", "pre", "progress", "q", "rp", "rt", "ruby", "s", "samp", "small", "strong", "sub", "sup", "time", "u", "var", "wbr", "form", "input", "textarea", "button", "select", "optgroup", "option", "label", "fieldset", "legend", "datalist", "keygen", "output", "iframe", "img", "map", "area", "canvas", "figcaption", "figure", "audio", "source", "track", "video", "a", "link", "nav", "ul", "ol", "li", "dl", "dt", "dd", "menu", "menuitem", "table", "caption", "th", "tr", "td", "thead", "tbody", "tfoot", "col", "colgroup", "style", "div", "span", "header", "footer", "main", "section", "article", "aside", "details", "dialog", "summary", "head", "meta", "base", "script", "noscript", "embed", "param"];
 
-    function dom() {
+    var cache = {};
+    var CACHE_LIMIT = 5;
+
+    function _dom(identifier) {
 
         var domObject;
         var traverse = undefined;
@@ -97,18 +100,12 @@ var dom = (function () {
             });
         };
 
-        if (arguments.length === 0) {
 
-            // body
-
-            domObject = window.document.body;
-            expand(domObject);
-            
-        } else if (arguments[0].charAt(0) === '.' || tags.indexOf(arguments[0]) !== -1) {
+        if (identifier.charAt(0) === '.' || tags.indexOf(identifier) !== -1) {
 
             // tags by class name or by tag name
 
-            var elements = window.document.querySelectorAll(arguments[0]);
+            var elements = window.document.querySelectorAll(identifier);
             var domCollection = Array.prototype.slice.call(elements);
 
             domCollection.forEach(function (value) {
@@ -125,30 +122,31 @@ var dom = (function () {
 
             domObject = domCollection;
 
-        } else if (dom.cache !== undefined) {
+        } else if (cache[identifier] !== undefined) {
 
-            
-            if (dom.cache(arguments[0]) !== undefined) {
+            // single cached tag by id
+            domObject = cache[identifier];
 
-                // single cached tag by id
-                domObject = dom.cache(arguments[0]);
-
-            } else {
-                domObject = dom.cache.add(arguments[0],expand(window.document.getElementById(arguments[0])));
-            }
-            
         } else {
 
             // single tag by id
-
-            var id = arguments[0];
+            
+            var id = identifier;
             domObject = window.document.getElementById(id);
 
             expand(domObject);
+
+            var cacheKeys = Object.keys(cache);
+            
+            if (cacheKeys.length === CACHE_LIMIT && cacheKeys.length > 0) {
+                console.log("delete");
+                delete cache[cacheKeys[0]];
+            }
+            cache[identifier] = domObject;
         }
 
         return domObject;
     }
 
-    return dom;
+    return _dom;
 }());
