@@ -41,7 +41,7 @@ var dom = (function () {
             };
 
             expanded.prepend = function (html) {
-                expanded.innerHTML = expanded.innerHTML + html;
+                expanded.innerHTML = html + expanded.innerHTML;
                 return expanded;
             };
 
