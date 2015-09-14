@@ -23,11 +23,6 @@
 var dom = (function () {
     'use strict';
 
-    var tags = ["html", "title", "body", "h1", "h2", "h3", "h4", "h5", "h6", "p", "br", "hr", "abbr", "address", "b", "i", "bdi", "bdo", "blockquote", "cite", "code", "del", "dfn", "em", "ins", "kbd", "mark", "pre", "progress", "q", "rp", "rt", "ruby", "s", "samp", "small", "strong", "sub", "sup", "time", "u", "var", "wbr", "form", "input", "textarea", "button", "select", "optgroup", "option", "label", "fieldset", "legend", "datalist", "keygen", "output", "iframe", "img", "map", "area", "canvas", "figcaption", "figure", "audio", "source", "track", "video", "a", "link", "nav", "ul", "ol", "li", "dl", "dt", "dd", "menu", "menuitem", "table", "caption", "th", "tr", "td", "thead", "tbody", "tfoot", "col", "colgroup", "style", "div", "span", "header", "footer", "main", "section", "article", "aside", "details", "dialog", "summary", "head", "meta", "base", "script", "noscript", "embed", "param"];
-
-    var cache = {};
-    var CACHE_LIMIT = 5;
-
     function _dom(identifier) {
 
         var domObject;
@@ -101,9 +96,18 @@ var dom = (function () {
         };
 
 
-        if (identifier.charAt(0) === '.' || tags.indexOf(identifier) !== -1) {
+        if (identifier.charAt(0) === "#") {
 
-            // tags by class name or by tag name
+            // element by id
+            var id = identifier.substring(1);
+            domObject = window.document.getElementById(id);
+
+            expand(domObject);
+
+            
+        } else {
+
+            // elements by class name or by tag name
 
             var elements = window.document.querySelectorAll(identifier);
             var domCollection = Array.prototype.slice.call(elements);
@@ -122,26 +126,6 @@ var dom = (function () {
 
             domObject = domCollection;
 
-        } else if (cache[identifier] !== undefined) {
-
-            // single cached tag by id
-            domObject = cache[identifier];
-
-        } else {
-
-            // single tag by id
-            
-            var id = identifier;
-            domObject = window.document.getElementById(id);
-
-            expand(domObject);
-
-            var cacheKeys = Object.keys(cache);
-            
-            if (cacheKeys.length === CACHE_LIMIT && cacheKeys.length > 0) {
-                delete cache[cacheKeys[0]];
-            }
-            cache[identifier] = domObject;
         }
 
         return domObject;
